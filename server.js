@@ -14,10 +14,12 @@ app.use(bodyParser.json());
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Email endpoint
-// Email endpoint
 app.post('/send-email', async (req, res) => {
+    // 1. Capture Form Data
+    // 'service' here will contain the value selected in the dropdown (e.g., "Zed Certification")
     const { name, email, phone, service, message } = req.body;
 
+    // 2. Validate Data
     if (!name || !email || !phone || !service || !message) {
         return res.status(400).json({
             success: false,
@@ -26,6 +28,7 @@ app.post('/send-email', async (req, res) => {
     }
 
     try {
+        // 3. Send Email
         const emailData = await resend.emails.send({
             from: "NBSOC <no-reply@updates.navabharatha.com>",
             to: "contact@navabharatha.com",
@@ -35,7 +38,7 @@ app.post('/send-email', async (req, res) => {
                 <p><strong>Name:</strong> ${name}</p>
                 <p><strong>Email:</strong> ${email}</p>
                 <p><strong>Phone:</strong> ${phone}</p>
-                <p><strong>Service:</strong> ${service}</p>
+                <p><strong>Service Interested In:</strong> ${service}</p>
                 <p><strong>Message:</strong></p>
                 <p>${message}</p>
             `
