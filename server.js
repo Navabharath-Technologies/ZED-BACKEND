@@ -28,8 +28,10 @@ app.post('/send-email', async (req, res) => {
         const emailData = await resend.emails.send({
             from: "NBSOC <no-reply@updates.navabharatha.com>",
             to: "contact@navabharatha.com",
-            // NOTICE THE BACKTICKS (`) BELOW:
-            subject: New Contact Form Submission from ${name},
+
+            // ✅ FIXED: template literal
+            subject: `New Contact Form Submission from ${name}`,
+
             html: `
                 <h2>New Contact Form Message</h2>
                 <p><strong>Name:</strong> ${name}</p>
@@ -58,6 +60,7 @@ app.post('/send-email', async (req, res) => {
     }
 });
 
+// ✅ FIXED: template literal + emoji inside string
 app.listen(PORT, () => {
-    console.log(🚀 Server running on port ${PORT});
+    console.log(`🚀 Server running on port ${PORT}`);
 });
