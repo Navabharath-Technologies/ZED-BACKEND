@@ -15,12 +15,14 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Email endpoint
 app.post('/send-email', async (req, res) => {
-    // 1. Capture Form Data
-    // 'service' here will contain the value selected in the dropdown (e.g., "Zed Certification")
+    // 1. Capture ALL fields (including Service and Phone)
     const { name, email, phone, service, message } = req.body;
 
-    // 2. Validate Data
+    // DEBUG LOG: Check your Render logs to see this line!
+    console.log("📝 Received Form Data:", { name, email, phone, service, message });
+
     if (!name || !email || !phone || !service || !message) {
+        console.log("❌ Missing fields in request");
         return res.status(400).json({
             success: false,
             message: "All fields are required."
@@ -28,11 +30,12 @@ app.post('/send-email', async (req, res) => {
     }
 
     try {
-        // 3. Send Email
         const emailData = await resend.emails.send({
             from: "NBSOC <no-reply@updates.navabharatha.com>",
             to: "contact@navabharatha.com",
+            // Subject now includes the Name
             subject: New Contact Form Submission from ${name},
+            // HTML body explicitly includes Phone and Service
             html: `
                 <h2>New Contact Form Message</h2>
                 <p><strong>Name:</strong> ${name}</p>
@@ -44,7 +47,7 @@ app.post('/send-email', async (req, res) => {
             `
         });
 
-        console.log("✔ Email Sent:", emailData);
+        console.log("✔ Email Sent Successfully:", emailData);
 
         return res.status(200).json({
             success: true,
@@ -53,7 +56,6 @@ app.post('/send-email', async (req, res) => {
 
     } catch (error) {
         console.error("❌ Email Send Error:", error);
-
         return res.status(500).json({
             success: false,
             message: "Failed to send email."
