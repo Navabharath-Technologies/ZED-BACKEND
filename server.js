@@ -14,10 +14,11 @@ app.use(bodyParser.json());
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Email endpoint
+// Email endpoint
 app.post('/send-email', async (req, res) => {
-    const { name, email, message } = req.body;
+    const { name, email, phone, service, message } = req.body;
 
-    if (!name || !email || !message) {
+    if (!name || !email || !phone || !service || !message) {
         return res.status(400).json({
             success: false,
             message: "All fields are required."
@@ -28,11 +29,13 @@ app.post('/send-email', async (req, res) => {
         const emailData = await resend.emails.send({
             from: "NBSOC <no-reply@updates.navabharatha.com>",
             to: "contact@navabharatha.com",
-            subject: `New Contact Form Submission from ${name}`,
+            subject: New Contact Form Submission from ${name},
             html: `
                 <h2>New Contact Form Message</h2>
                 <p><strong>Name:</strong> ${name}</p>
                 <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Phone:</strong> ${phone}</p>
+                <p><strong>Service:</strong> ${service}</p>
                 <p><strong>Message:</strong></p>
                 <p>${message}</p>
             `
@@ -57,6 +60,5 @@ app.post('/send-email', async (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(🚀 Server running on port ${PORT});
 });
-
